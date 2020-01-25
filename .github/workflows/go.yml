@@ -24,5 +24,16 @@ jobs:
             dep ensure
         fi
 
-    - name: Build
-      run: go build -v .
+    - name: Build x86 Linux
+      run: GOOS=linux GOARCH=386 go build -v -o build/http-x86 .
+
+    - name: Build x86 Windows
+      run: GOOS=windows GOARCH=386 go build -v -o build/http-x86.exe .
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+        name: release
+        # Directory containing files to upload
+        path: build/
