@@ -23,7 +23,6 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
-        sudo apt-get install -y gcc-arm-linux-androideabi
         
     - name: Build x86 Linux
       run: GOOS=linux GOARCH=386 go build -v -o build/http-linux-x86 .
@@ -33,9 +32,6 @@ jobs:
     
     - name: Build arm Linux
       run: GOOS=linux GOARCH=arm go build -v -o build/http-linux-arm .
-
-    - name: Build arm Android
-      run: GOOS=android GOARCH=arm GOARM=7 CC=arm-linux-androideabi-gcc go build -v -o build/http-android-arm .
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
