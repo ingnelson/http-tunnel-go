@@ -21,3 +21,6 @@ Without proxy authentication:
 With proxy authentication:
 
 ```./http-tunnel-go -proxy 52.77.245.227:8080 -port 8888 -auth leo:leo -payload "CONNECT [host_port] HTTP/1.0[crlf][crlf]"```
+
+## License
+Non-Profit Open Software License 3.0 (NPOSL-3.0)
