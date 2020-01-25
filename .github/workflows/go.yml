@@ -23,15 +23,20 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
+        sudo apt update
+        sudo apt install upx -y
         
     - name: Build x86 Linux
-      run: GOOS=linux GOARCH=386 go build -v -o build/http-linux-x86 .
+      run: GOOS=linux GOARCH=386 go build -ldflags "-s -w" -v -o build/http-linux-x86 .
 
     - name: Build x86 Windows
-      run: GOOS=windows GOARCH=386 go build -v -o build/http-windows-x86.exe .
+      run: GOOS=windows GOARCH=386 go build -ldflags "-s -w" -v -o build/http-windows-x86.exe .
     
     - name: Build arm Linux
-      run: GOOS=linux GOARCH=arm go build -v -o build/http-linux-arm .
+      run: GOOS=linux GOARCH=arm go build -ldflags "-s -w" -v -o build/http-linux-arm .
+    
+    - name: Compress using UPX
+      run: upx -9 build/*
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
