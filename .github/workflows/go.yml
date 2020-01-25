@@ -25,10 +25,16 @@ jobs:
         fi
 
     - name: Build x86 Linux
-      run: GOOS=linux GOARCH=386 go build -v -o build/http-x86 .
+      run: GOOS=linux GOARCH=386 go build -v -o build/http-linux-x86 .
 
     - name: Build x86 Windows
-      run: GOOS=windows GOARCH=386 go build -v -o build/http-x86.exe .
+      run: GOOS=windows GOARCH=386 go build -v -o build/http-windows-x86.exe .
+    
+    - name: Build arm Linux
+      run: GOOS=linux GOARCH=arm go build -v -o build/http-linux-arm .
+
+    - name: Build arm Android
+      run: GOOS=android GOARCH=arm go build -v -o build/http-android-arm .
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
