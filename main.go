@@ -193,11 +193,13 @@ func main() {
 		log.Println(err)
 	}
 
+	sDec, _ := base64.StdEncoding.DecodeString(*payloadPtr)
+	
 	manager := ClientManager{
 		clients:    make(map[*Client]bool),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
-		payload:    *payloadPtr,
+		payload:    string(sDec),
 		auth:       base64.StdEncoding.EncodeToString([]byte(*authPtr)),
 	}
 
