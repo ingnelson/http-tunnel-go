@@ -62,6 +62,7 @@ func (manager *ClientManager) parsePayload(request *[]byte) []byte {
 				"Authorization: Basic "+manager.auth)
 		}
 
+		parsed = strings.ReplaceAll(parsed, "[ua]", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36")
 		parsed = strings.ReplaceAll(parsed, "[crlf]", "\r\n")
 		parsed = strings.ReplaceAll(parsed, "[cr]", "\r")
 		parsed = strings.ReplaceAll(parsed, "[lf]", "\n")
