@@ -8,7 +8,6 @@ import (
 	"log"
 	"net"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -170,11 +169,11 @@ func (manager *ClientManager) handleConnection(client *Client) {
 
 func main() {
 
-	fmt.Println("A Cross-Platform HTTP Tunnel by @lfasmpao | Version: 0.0.1 alpha")
+	fmt.Println("A Cross-Platform HTTP Tunnel by @lfasmpao | Version: 0.0.2 alpha")
 
 	hostPtr := flag.String("proxy", "", "Proxy Server [host:port] (required)")
 	payloadPtr := flag.String("payload", "", "Payload (required)")
-	serverPtr := flag.Int("port", 8888, "Server Port")
+	listenPtr := flag.String("listen", "127.0.0.1:8888", "Local Server [host:port]")
 	authPtr := flag.String("auth", "", "Proxy Authentication [username:password] (optional)")
 	flag.Parse()
 
@@ -183,18 +182,18 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Println("Server running on port:", *serverPtr)
-	log.Println("Server running on proxy:", *hostPtr)
-	log.Println("Payload:", *payloadPtr)
+	sDec, _ := base64.StdEncoding.DecodeString(*payloadPtr)
 
-	conn, err := net.Listen("tcp", ":"+strconv.Itoa(*serverPtr))
+	log.Println("Server running on local:", *listenPtr)
+	log.Println("Server running on proxy:", *hostPtr)
+	log.Println("Payload:", string(sDec))
+
+	conn, err := net.Listen("tcp", *listenPtr)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	sDec, _ := base64.StdEncoding.DecodeString(*payloadPtr)
-	
 	manager := ClientManager{
 		clients:    make(map[*Client]bool),
 		register:   make(chan *Client),
