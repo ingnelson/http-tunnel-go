@@ -179,7 +179,7 @@ func (manager *ClientManager) handleConnection(client *Client) {
 
 func main() {
 
-	fmt.Println("A Cross-Platform HTTP Tunnel by @lfasmpao | Version: 0.0.2 alpha")
+	fmt.Println("A Cross-Platform HTTP Tunnel by @lfasmpao | Version: 0.0.3 alpha")
 
 	hostPtr := flag.String("proxy", "", "Proxy Server [host:port] (required)")
 	payloadPtr := flag.String("payload", "", "Payload (required)")
