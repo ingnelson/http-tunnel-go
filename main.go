@@ -43,7 +43,7 @@ func (manager *ClientManager) start() {
 }
 
 func (manager *ClientManager) parsePayload(request *[]byte) []byte {
-	if isHttpConnectRequest(request) {
+	if isHttpRequest(request) {
 		reqString := string(*request)
 		payload := manager.payload                          // copy payload from manager
 		splitRequestRaw := strings.Split(reqString, "\r\n") // split http request
@@ -71,8 +71,18 @@ func (manager *ClientManager) parsePayload(request *[]byte) []byte {
 	return *request
 }
 
-func isHttpConnectRequest(request *[]byte) bool {
-	if strings.Contains(string(*request), "CONNECT") {
+func isHttpRequest(request *[]byte) bool {
+	if strings.Contains(string(*request), "CONNECT") ||
+		strings.Contains(string(*request), "GET") ||
+		strings.Contains(string(*request), "POST") ||
+		strings.Contains(string(*request), "PUT") ||
+		strings.Contains(string(*request), "OPTIONS") ||
+		strings.Contains(string(*request), "TRACE") ||
+		strings.Contains(string(*request), "TRACE") ||
+		strings.Contains(string(*request), "OPTIONS") ||
+		strings.Contains(string(*request), "TRACE") ||
+		strings.Contains(string(*request), "PATCH") ||
+		strings.Contains(string(*request), "DELETE") {
 		return true
 	}
 	return false
