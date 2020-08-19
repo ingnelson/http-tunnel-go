@@ -8,7 +8,6 @@ import (
 	"log"
 	"net"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -44,7 +43,7 @@ func (manager *ClientManager) start() {
 }
 
 func (manager *ClientManager) parsePayload(request *[]byte) []byte {
-	if isHttpConnectRequest(request) {
+	if isHttpRequest(request) {
 		reqString := string(*request)
 		payload := manager.payload                          // copy payload from manager
 		splitRequestRaw := strings.Split(reqString, "\r\n") // split http request
@@ -72,8 +71,18 @@ func (manager *ClientManager) parsePayload(request *[]byte) []byte {
 	return *request
 }
 
-func isHttpConnectRequest(request *[]byte) bool {
-	if strings.Contains(string(*request), "CONNECT") {
+func isHttpRequest(request *[]byte) bool {
+	if strings.Contains(string(*request), "CONNECT") ||
+		strings.Contains(string(*request), "GET") ||
+		strings.Contains(string(*request), "POST") ||
+		strings.Contains(string(*request), "PUT") ||
+		strings.Contains(string(*request), "OPTIONS") ||
+		strings.Contains(string(*request), "TRACE") ||
+		strings.Contains(string(*request), "TRACE") ||
+		strings.Contains(string(*request), "OPTIONS") ||
+		strings.Contains(string(*request), "TRACE") ||
+		strings.Contains(string(*request), "PATCH") ||
+		strings.Contains(string(*request), "DELETE") {
 		return true
 	}
 	return false
@@ -170,11 +179,11 @@ func (manager *ClientManager) handleConnection(client *Client) {
 
 func main() {
 
-	fmt.Println("A Cross-Platform HTTP Tunnel by @lfasmpao | Version: 0.0.1 alpha")
+	fmt.Println("A Cross-Platform HTTP Tunnel by @lfasmpao | Version: 0.0.3 alpha")
 
 	hostPtr := flag.String("proxy", "", "Proxy Server [host:port] (required)")
 	payloadPtr := flag.String("payload", "", "Payload (required)")
-	serverPtr := flag.Int("port", 8888, "Server Port")
+	listenPtr := flag.String("listen", "127.0.0.1:8888", "Local Server [host:port]")
 	authPtr := flag.String("auth", "", "Proxy Authentication [username:password] (optional)")
 	flag.Parse()
 
@@ -183,11 +192,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Println("Server running on port:", *serverPtr)
-	log.Println("Server running on proxy:", *hostPtr)
-	log.Println("Payload:", *payloadPtr)
+	sDec, _ := base64.StdEncoding.DecodeString(*payloadPtr)
 
-	conn, err := net.Listen("tcp", ":"+strconv.Itoa(*serverPtr))
+	log.Println("Server running on local:", *listenPtr)
+	log.Println("Server running on proxy:", *hostPtr)
+	log.Println("Payload:", string(sDec))
+
+	conn, err := net.Listen("tcp", *listenPtr)
 
 	if err != nil {
 		log.Println(err)
@@ -197,7 +208,7 @@ func main() {
 		clients:    make(map[*Client]bool),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
-		payload:    *payloadPtr,
+		payload:    string(sDec),
 		auth:       base64.StdEncoding.EncodeToString([]byte(*authPtr)),
 	}
 
